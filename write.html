@@ -33,15 +33,15 @@
       </nav>
 
       <div class="container mt-4">
-        <form>
+        <form action="/add" method="POST">
             <h4>기록해도 안할 거 알지만</h4>
             <div class="form-group">
-            <label for="text">오늘의 할일</label>
-            <input type="text" class="form-control" id="" placeholder="오늘의 할일">
+                <label for="text">오늘의 할일</label>
+                <input type="text" class="form-control" placeholder="오늘의 할일" name="title">
             </div>
             <div class="form-group">
-                <label for="text">세부내용</label>
-                <input type="text" class="form-control" placeholder="세부내용">
+                <label for="text">Due date</label>
+                <input type="text" class="form-control" placeholder="Due date" name="date">
             </div>
             <button type="submit" class="btn btn-light">저장하기</button>
         </form>
