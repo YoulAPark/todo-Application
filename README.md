@@ -1,7 +1,7 @@
 ## 💻 server run
 ```nodemon server.js```
 
-## 📚 Project in use
+## 📚 Modules Used
 #### express
 ```js
 const express = require('express');
