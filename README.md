@@ -1,7 +1,7 @@
 ## 💻 server run
 ```nodemon server.js```
 
-## 📚 Library in use
+## 📚 Project in use
 #### express
 ```js
 const express = require('express');
@@ -11,6 +11,11 @@ const express = require('express');
 ```js
 const bodyParser = require('body-parser'); 
 app.use(bodyParser.urlencoded({extended : true}));
+```
+
+#### ejs
+```js
+app.set('view engine', 'ejs');
 ```
 
 ## 💿 DB
