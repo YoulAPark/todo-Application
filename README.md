@@ -1,10 +1,10 @@
 ## 💻 개발환경
-💻 IDE : VSCode  
-💻 Front-end : **Node.js**  
-💻 Back-end : NoSQL, **MongoDB**  
-💻 Framework : express, Bootstrap5.0.2
-💻 Middlewear : bodyParser  
-💻 View engine : ejs  
+- IDE : VSCode  
+- Front-end : **Node.js**  
+- Back-end : NoSQL, **MongoDB**  
+- Framework : express, Bootstrap5.0.2
+- Middleware : bodyParser  
+- View engine : ejs  
 
 ## 💻 server run
 ```nodemon server.js```
