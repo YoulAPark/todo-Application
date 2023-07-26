@@ -12,11 +12,11 @@
   </head>
   <body>
 
-    <%- include('nav.html') %>      
+    <%- include('nav.html') %>
 
       <div class="container mt-4">
-        <form action="/add" method="POST">
-            <h4>기록해도 안할 거 알지만</h4>
+        <form action="/update" method="PUT">
+            <h4>수정</h4>
             <div class="form-group">
                 <label for="text">오늘의 할일</label>
                 <input type="text" class="form-control" placeholder="오늘의 할일" name="title">
@@ -25,7 +25,7 @@
                 <label for="text">Due date</label>
                 <input type="text" class="form-control" placeholder="Due date" name="date">
             </div>
-            <button type="submit" class="btn btn-light">저장하기</button>
+            <button type="submit" class="btn btn-primary">수정하기</button>
         </form>
       </div>
 

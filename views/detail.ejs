@@ -18,6 +18,7 @@
     <%- include('nav.html') %>      
       
     <div class="container mt-4">
+
       <h4 class="text-center ">상세페이지</h4>  
 
       <div class="card" style="width: 100%;">
@@ -25,10 +26,20 @@
           <h5 class="card-title"><%= data.제목 %></h5>
           <h6 class="card-subtitle mb-2 text-muted"><%= data.날짜 %></h6>
           <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-          <a href="#" class="card-link">수정하기</a>
+          <a href="#" class="card-link update" data-id="<%=data._id%>" type="submit">수정하기</a>
         </div>
       </div>
+
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+    <script>
+      $('.update').click(function(e){
+          var 글번호 = e.target.dataset.id;
+          location.href="/edit/"+글번호;
+      }); 
+    </script>
 
 
       <!-- Optional JavaScript -->

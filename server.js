@@ -27,10 +27,13 @@ app.get('/write', function(요청, 응답) {
 });
 
 
+app.post('/update', function(요청, 응답) {
+  응답.send('update 전송완료');
+});
+
 // '/add' 라는 링크로 접속했을 때
 app.post('/add', function(요청, 응답) {
   응답.send('전송완료');
-
   // counter라는 collection에서 name이 'boardCnt'인 데이터 하나를 찾아주세요 [findOne]
   db.collection('counter').findOne({name : 'boardCnt'}, function(에러, 결과){
     // 결과.totalPost
@@ -56,7 +59,7 @@ app.get('/list', function(요청, 응답) {
     응답.render('list.ejs', { posts : 결과 });
   });
 }); 
-
+ 
 app.delete('/delete', function(요청, 응답){
   console.log(요청.body);
   요청.body._id = parseInt(요청.body._id); // 문자열로 치환되는 body._id를 숫자로 치환해주는 것
@@ -74,4 +77,12 @@ app.get('/detail/:id', function(요청, 응답){
         // if(응답.status(200)){return console.log("성공")};
         if(결과==null){return console.log("400 Bad Error가 발생했습니다.")};        
     });    
+});
+
+app.get('/edit/:id', function(요청, 응답) {
+  db.collection('post').findOne({ _id : parseInt(요청.params.id) }, function(에러, 결과){
+    console.log(결과);
+    응답.render('edit.ejs', { data : 결과 });
+    if(결과==null){return console.log("400 Bad Error가 발생했습니다.")};        
+  }); 
 });
