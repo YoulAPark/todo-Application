@@ -51,3 +51,14 @@ app.get('/list', function(요청, 응답) {
     응답.render('list.ejs', { posts : 결과 });
   });
 }); 
+
+app.delete('/delete', function(요청, 응답){
+  console.log(요청.body);
+  요청.body._id = parseInt(요청.body._id); // 문자열로 치환되는 body._id를 숫자로 치환해주는 것
+  db.collection('post').deleteOne( 요청.body, function(에러, 결과) {
+    // 응답.status(200).send({ message : '성공했습니다.' }); // 무조건 200 성공 코드 보냄
+    // 응답.status(400).send({ message : '실패했습니다.' }); // 무조건 400 에러 코드 보냄
+    console.log('삭제완료');
+  });
+
+});
