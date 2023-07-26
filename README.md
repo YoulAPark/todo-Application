@@ -1,4 +1,4 @@
-## 💻 개발환경
+## 💻 About this project
 - IDE : VSCode  
 - Front-end : **Node.js**  
 - Back-end : NoSQL, **MongoDB**  
