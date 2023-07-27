@@ -11,7 +11,8 @@ app.use(methodOverride('_method'));
 
 // [로그인준비]
 /* [passport] [passport-local] [express-session]
-설치방식 : npm install passport passport-local express-session | 종류 : Library | 용도 : Session 로그인 기능 구현*/
+설치방식 : npm install passport passport-local express-session | 종류 : Library | 용도 : Session 로그인 기능 구현
+passport : 로그인할때 유효성검사 기능을 쉽게 구현할 수 있도록 도와준다. */
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
@@ -20,12 +21,10 @@ app.use(session({secret : '비밀코드', resave : true, saveUninitialized: fals
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-
 app.set('view engine', 'ejs');
 app.use('/public', express.static('public'));
 
- 
+  
 var db;
 
 MongoClient.connect('mongodb+srv://admin:qwer1234@jennifer.j22z1ok.mongodb.net/todoApplication?retryWrites=true&w=majority', { useUnifiedTopology: true }, function (에러, client) {
@@ -111,6 +110,42 @@ app.put('/edit', function(요청, 응답){
   });
 });
 
-app.post('/login', function(요청, 응답){
-  // (회원인증기능 1) 로그인 페이지 만들기 & 아이디 비번 검사 07:37 
+app.get('/login', function(요청, 응답){
+  응답.render('login.ejs');
 });
+
+app.post('/login', passport.authenticate('local', {
+  failureRedirect : '/fail'
+}), function(요청, 응답){
+  응답.redirect('/');
+});
+
+// app.post('/login') 을 실행하면 실행하게 되는 메서드이다.
+passport.use(new LocalStrategy({
+  usernameField: 'id',
+  passwordField: 'pw',
+  session: true,
+  passReqToCallback: false,
+}, function (입력한아이디, 입력한비번, done) {
+  //console.log(입력한아이디, 입력한비번);
+  db.collection('login').findOne({ id: 입력한아이디 }, function (에러, 결과) {
+    if (에러) return done(에러)
+
+    if (!결과) return done(null, false, { message: '존재하지않는 아이디요' })
+    if (입력한비번 == 결과.pw) {
+      return done(null, 결과)
+    } else {
+      return done(null, false, { message: '비번틀렸어요' })
+    }
+  })
+}));
+
+// session 데이터 만드는법
+// session을 저장시키는 코드 (로그인 성공시 발동)
+passport.serializeUser(function (user, done) {
+  done(null, user.id)
+});
+
+passport.deserializeUser(function (아이디, done) {
+  done(null, {})
+}); 

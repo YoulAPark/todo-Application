@@ -1,0 +1,60 @@
+passport Library에 대해서
+
+로그인을 할 때 유효성검사를 대신 편리하게 해주는 라이브러리이다.
+
+[사용하는 메서드]
+1. passport.authenticate('local')
+    => 가장 기본적인 simple한 유효성검사
+
+2. passport.authenticate('local', {
+  failureRedirect : '/fail'
+})
+    => 로그인 실패시 failureRedirect로 지정된 페이지로 이동시킨다.
+
+
+
+LocalStrategy에 대해서
+
+passport.use(new LocalStrategy({
+  usernameField: 'id', => 유저가 input 태그에 name 속성으로 기재한 변수명
+  passwordField: 'pw', => <input type="text" name="pw">
+  session: true, => 로그인 후 세션을 저장할 것인지
+  passReqToCallback: false, => 아이디와 비번 말고도 다른 유효성검사가 필요한지 (true/false)
+}, function (입력한아이디, 입력한비번, done) {
+  //console.log(입력한아이디, 입력한비번);
+  db.collection('login').findOne({ id: 입력한아이디 }, function (에러, 결과) {
+    if (에러) return done(에러)
+
+    if (!결과) return done(null, false, { message: '존재하지않는 아이디요' }) => 결과에 아무것도 없을때
+    if (입력한비번 == 결과.pw) { => 결과에 아이디가 있을 경우 입력한 비번과 결과.pw를 비교
+      return done(null, 결과) => done에 대한 설명 하단에
+    } else {
+      return done(null, false, { message: '비번틀렸어요' })
+    }
+  })
+}));
+
+done()에 대하여
+done( null, false, { message : '존재하지않는 아이디'} )
+done은 세 개의 파라미터를 가질 수 있다.
+1. 서버에러
+2. false 성공시 사용자DB데이터
+3. 에러메세지
+
+세션정보를 어떻게 만들것인가?
+// session 데이터 만드는법
+// session을 저장시키는 코드 (로그인 성공시 발동)
+passport.serializeUser(function (user, done) {
+  done(null, user.id)
+});
+
+// 세션데이터에 있을 경우 이 사람을 DB에서 찾아주는거 (마이페이지 접속시 발동)
+passport.deserializeUser(function (아이디, done) {
+  done(null, {})
+}); 
+
+// 쿠키 확인하는 방법
+개발자도구 - Application - Cookies - 확인할페이지 - 목록이 쿠키
+
+!! 로그인 방법
+세션 데이터를 만들고 세션의 id 정보를 쿠키로 보낸다.
