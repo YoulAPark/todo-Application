@@ -1,0 +1,18 @@
+
+/* 수정, PUT, [updateOne]
+1) db.collection('post').updateOne( {A},{B}, function(에러, 결과){
+    A라는 데이터를 찾아다가 B라는 데이터로 바꿔달라
+
+2) db.collection('post').updateOne( {A},{ $set : {} }, function(에러, 결과){
+
+3) {_id : 요청.body.id 
+  요청.body.(input type="text" 인 것 중에 name="id" 인 것을 가져와달라.)
+
+4) 완성
+db.collection('post').updateOne( {_id : parseInt(요청.body.id)}, { $set : { 제목 : 요청.body.title, 날짜 : 요청.body.date } }, function(에러, 결과){
+*/
+
+/*
+1. [새로고침]
+응답.redirect('/list');
+*/

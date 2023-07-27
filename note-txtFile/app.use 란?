@@ -1,0 +1,7 @@
+app.use(미들웨어)
+
+웹서버는 요청과 응답을 해주는 프로그램
+그 요청과 응답사이에 뭔가 실행되는 코드\
+
+*app.use(session({secret : '비밀코드', resave : true, saveUninitialized: false}));
+'비밀코드' 저건 내 맘대로 정할수 있는 코드
