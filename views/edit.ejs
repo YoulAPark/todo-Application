@@ -8,6 +8,9 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
+    <!-- CSS 첨부하는 곳 -->
+    <link rel="stylesheet" href="/public/main.css">
+
     <title>Hello, world!</title>
   </head>
   <body>
@@ -15,15 +18,16 @@
     <%- include('nav.html') %>
 
       <div class="container mt-4">
-        <form action="/update" method="PUT">
+        <form action="/edit?_method=PUT" method="POST">
             <h4>수정</h4>
+            <input type="text" value="<%= data._id %>" name="id" style="display : none">
             <div class="form-group">
-                <label for="text">오늘의 할일</label>
-                <input type="text" class="form-control" placeholder="오늘의 할일" name="title">
+                <label for="text">할 일 제목</label>
+                <input value="<%= data.제목 %>" type="text" class="form-control" name="title">
             </div>
             <div class="form-group">
                 <label for="text">Due date</label>
-                <input type="text" class="form-control" placeholder="Due date" name="date">
+                <input value="<%= data.날짜 %>"type="text" class="form-control" name="date">
             </div>
             <button type="submit" class="btn btn-primary">수정하기</button>
         </form>
