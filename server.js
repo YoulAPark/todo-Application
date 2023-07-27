@@ -1,7 +1,15 @@
 const express = require('express');
 const app = express();
+/* [bodyParser]
+설치방식 : npm install body-parser | 종류 : Library | 용도 : post방식으로 보낼 때 데이터들을 쉽게 처리해줌
+2021년 이후로는 express에 기본 포함되어있어 따로 설치할 필요도 없음
+*/
 const bodyParser = require('body-parser'); 
 app.use(bodyParser.urlencoded({extended : true}));
+
+/*[MongoDB]
+설치방식 : npm install mongodb@3.6.4 | 종류 : Library | 용도 : mongoDB 연결을 쉽게해줌
+*/
 const MongoClient = require('mongodb').MongoClient;
 
 /* [method-Override]
@@ -21,6 +29,9 @@ app.use(session({secret : '비밀코드', resave : true, saveUninitialized: fals
 app.use(passport.initialize());
 app.use(passport.session());
 
+/* [ejs]
+설치방식 : npm install ejs | 종류 : Template engine | 용도 : HTML에 실제 DB를 넣음 / 서버데이터를 HTML에 쉽게 넣을 수 있는 HTML 렌더링 엔진
+*/
 app.set('view engine', 'ejs');
 app.use('/public', express.static('public'));
 
@@ -40,6 +51,10 @@ if (에러) return console.log(에러)
 app.get('/', function(요청, 응답) {
   응답.render('index.ejs');
 });
+
+app.get('/login', function(요청, 응답){
+  응답.render('login.ejs');
+})
 
 app.get('/write', function(요청, 응답) {
   응답.render('write.ejs');
