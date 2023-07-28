@@ -35,17 +35,19 @@ app.use(passport.session());
 app.set('view engine', 'ejs');
 app.use('/public', express.static('public'));
 
+/* [dotenv]
+설치방식 : npm install dotenv | 종류 : Library | 용도 : MongoDB 접속에 필요한 아디,비번이라던지 그런 부분들을 .env파일에 넣고 포트번호로 찾을 수 있게 해주는 라이브러리 
+*/
+require('dotenv').config();
   
 var db;
 
-MongoClient.connect('mongodb+srv://admin:qwer1234@jennifer.j22z1ok.mongodb.net/todoApplication?retryWrites=true&w=majority', { useUnifiedTopology: true }, function (에러, client) {
-
-if (에러) return console.log(에러)
-  db = client.db('todoApplication');
-
-  app.listen(8080, function () {
-    console.log('listening on 8080')
-  });
+MongoClient.connect(process.env.DB_URL, { useUnifiedTopology: true }, function (에러, client) {
+  if (에러) return console.log(에러)
+    db = client.db('todoApplication');
+    app.listen(process.env.PORT, function () {
+      console.log('listening on 8080')
+    });
 });
 
 app.get('/', function(요청, 응답) {
@@ -58,6 +60,10 @@ app.get('/login', function(요청, 응답){
 
 app.get('/write', function(요청, 응답) {
   응답.render('write.ejs');
+});
+
+app.get('/search', (요청, 응답) => {
+  console.log(요청.query)
 });
 
 // '/add' 라는 링크로 접속했을 때
@@ -142,16 +148,14 @@ passport.use(new LocalStrategy({
   session: true,
   passReqToCallback: false,
 }, function (입력한아이디, 입력한비번, done) {
-  //console.log(입력한아이디, 입력한비번);
-  db.collection('login').findOne({ id: 입력한아이디 }, function (에러, 결과) {
-    if (에러) return done(에러)
-
-    if (!결과) return done(null, false, { message: '존재하지않는 아이디요' })
-    if (입력한비번 == 결과.pw) {
-      return done(null, 결과)
-    } else {
-      return done(null, false, { message: '비번틀렸어요' })
-    }
+    db.collection('login').findOne({ id: 입력한아이디 }, function (에러, 결과) {
+      if (에러) return done(에러)
+      if (!결과) return done(null, false, { message: '존재하지않는 아이디요' })
+      if (입력한비번 == 결과.pw) {
+        return done(null, 결과)
+      } else {
+        return done(null, false, { message: '비번틀렸어요' })
+      }
   })
 }));
 
@@ -161,6 +165,23 @@ passport.serializeUser(function (user, done) {
   done(null, user.id)
 });
 
-passport.deserializeUser(function (아이디, done) {
-  done(null, {})
+//myPage로 들어올경우 로그인했니라는 미들웨어(메서드)를 실행한다
+app.get('/myPage', 로그인했니, function(요청, 응답){
+  응답.render('myPage.ejs', {사용자 : 요청.user})
+});
+
+//미들웨어 만드는법
+function 로그인했니(요청, 응답, next){ //요청.user가 있을 경우 next를 실행해라
+  if (요청.user) {
+    next()
+  } else {
+    응답.send('로그인 안하셨는데요?')
+  }
+}
+
+// 세션을 찾을때 실행되는 함수 -> 마이페이지 접속할때라던지
+passport.deserializeUser(function (아이디/*user.id*/, done) {
+  db.collection('login').findOne( {id : 아이디}, function(에러, 결과) {
+    done(null, 결과)
+  });
 }); 

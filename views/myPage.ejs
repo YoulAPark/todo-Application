@@ -8,20 +8,16 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
+    <!-- CSS 첨부하는 곳 -->
+    <link rel="stylesheet" href="/public/main.css">
+
     <title>Hello, world!</title>
   </head>
   <body>
 
     <%- include('nav.html') %>
 
-      <div class="jumbotron">
-        <h1 class="display-4">Welcome! Todo-App!</h1>
-        <p class="lead">Todo-Application의 Home입니다.</p>
-        <hr class="my-4">
-        <a class="btn btn-secondary btn-lg" href="/login" role="button">Login</a>
-        <a class="btn btn-secondary btn-lg" href="/list" role="button">할 일 목록</a>
-        <a class="btn btn-secondary btn-lg" href="/myPage" role="button">마이페이지</a>
-      </div>
+      <p><%= 사용자.id %>님의 마이페이지</p>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
