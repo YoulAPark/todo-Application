@@ -9,7 +9,19 @@
 ## 💻 server run
 ```nodemon server.js```
 
-## 📚 Modules Used
+## 💿 DB
+#### MongoDB
+```js
+const MongoClient = require('mongodb').MongoClient;
+```
+
+## 💿 Template engine
+#### ejs
+```js
+app.set('view engine', 'ejs');
+```
+
+## 📚 Used libraries
 #### express
 ```js
 const express = require('express');
@@ -21,13 +33,31 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended : true}));
 ```
 
-#### ejs
+#### method-Override
 ```js
-app.set('view engine', 'ejs');
+const methodOverride = require('method-override');
+app.use(methodOverride('_method')); 
 ```
 
-## 💿 DB
-#### MongoDB
+#### passport
 ```js
-const MongoClient = require('mongodb').MongoClient;
+const passport = require('passport');
 ```
+
+#### passport-local
+```js
+const LocalStrategy = require('passport-local').Strategy;
+```
+
+#### express-session
+```js
+const session = require('express-session');
+```
+
+#### dotenv
+```js
+require('dotenv').config();
+```
+
+
+
