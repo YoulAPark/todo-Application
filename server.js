@@ -62,13 +62,22 @@ app.get('/write', function(요청, 응답) {
   응답.render('write.ejs');
 });
 
-app.get('/search', (요청, 응답) => {
-  console.log(요청.query)
+app.get('/search', (요청, 응답)=>{
+  console.log(요청.query);
+  db.collection('post').find({ $text : { $search : 요청.query.value } }).toArray((에러, 결과)=>{
+    console.log(결과)
+    응답.render('search.ejs', {posts : 결과})
+  })
 });
+
+// indexing 처리 - mongoDB에서 indexing 진행 후 사용
+// { $text : ; { $search : 요청.query.value } }
+// 검색기능 만들기 3 : 네이버같은 검색기능 만들려면 (Search index) : 02:35
+
 
 // '/add' 라는 링크로 접속했을 때
 app.post('/add', function(요청, 응답) {
-  응답.send('전송완료');
+  // 응답.send('전송완료');
   // counter라는 collection에서 name이 'boardCnt'인 데이터 하나를 찾아주세요 [findOne]
   db.collection('counter').findOne({name : 'boardCnt'}, function(에러, 결과){
     // 결과.totalPost
@@ -85,7 +94,7 @@ app.post('/add', function(요청, 응답) {
       });
     }); 
   }); 
-  
+  응답.redirect('/list');
 });
 
 app.get('/list', function(요청, 응답) {

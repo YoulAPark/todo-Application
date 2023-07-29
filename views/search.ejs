@@ -17,8 +17,8 @@
 
     <%- include('nav.html') %>
       
-      <h4 class="ml-2 my-3 text-center">서버에서 가져온 할 일 리스트</h4>
-      
+      <h4 class="ml-2 my-3 text-center">검색결과</h4>
+
       <div class="container input-group mb-2">
         <input class="form-control" id="searchInput">
         <button class="input-group-append btn btn-danger" id="search">검색</button>
@@ -45,15 +45,6 @@
           console.log('입력한값 : '+입력한값);
           window.location.replace('/search?value=' + 입력한값);
         });
-   
-        // QueryString 다른 방법
-        /*
-            var 자료 = { 이름 : '값', 이름2 : '값' }
-            $.param{자료}
-        */
-        /*
-            $(폼태그).serialize()
-        */
 
         $('.detail').click(function(e){
           var 글번호 = e.target.dataset.id;
