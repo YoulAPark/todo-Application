@@ -72,7 +72,7 @@ app.get('/search', (요청, 응답)=>{
 
 // indexing 처리 - mongoDB에서 indexing 진행 후 사용
 // { $text : ; { $search : 요청.query.value } }
-// 검색기능 만들기 3 : 네이버같은 검색기능 만들려면 (Search index) : 02:35
+// 검색기능 만들기 3 : 네이버같은 검색기능 만들려면 (Search index) : 02:35 
 
 
 // '/add' 라는 링크로 접속했을 때
