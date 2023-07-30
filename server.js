@@ -62,9 +62,28 @@ app.get('/write', function(요청, 응답) {
   응답.render('write.ejs');
 });
 
+app.get('/join', function(요청, 응답) {
+  응답.render('join.ejs');
+})
+
 app.get('/search', (요청, 응답)=>{
-  console.log(요청.query);
-  db.collection('post').find({ $text : { $search : 요청.query.value } }).toArray((에러, 결과)=>{
+  //db.collection('post').find({ $text : { $search : 요청.query.value } }).toArray((에러, 결과)=>{
+  // 해당 부분은 mongoDB에서 Search Index를 적용하는 방법임 => '글쓰기이지만' 이라고 입력해야 검색이 되는 부분에 대한 처리
+  var 검색조건 = [
+    {
+      $search: {
+        index: 'titleSearch',
+        text: {
+          query: 요청.query.value,
+          path: '제목'  // 제목날짜 둘다 찾고 싶으면 ['제목', '날짜']
+        }
+      }
+    },
+    // { $project : { 제목 : 1, _id : 1, score : { $meta : "searchScore" } } }, $meta : 검색이 얼마나 일치하는지 score라는 숫자로 나타내준다.
+    { $sort : { _id : 1 } }, // _id를 기준으로 1 : 오름차순 // -1 : 내림차순
+    { $limit : 10 } // 최대 몇 개 까지 조회할 것인지
+]
+    db.collection('post').aggregate(검색조건).toArray((에러, 결과)=>{
     console.log(결과)
     응답.render('search.ejs', {posts : 결과})
   })
@@ -72,47 +91,13 @@ app.get('/search', (요청, 응답)=>{
 
 // indexing 처리 - mongoDB에서 indexing 진행 후 사용
 // { $text : ; { $search : 요청.query.value } }
-// 검색기능 만들기 3 : 네이버같은 검색기능 만들려면 (Search index) : 02:35 
-
-
-// '/add' 라는 링크로 접속했을 때
-app.post('/add', function(요청, 응답) {
-  // 응답.send('전송완료');
-  // counter라는 collection에서 name이 'boardCnt'인 데이터 하나를 찾아주세요 [findOne]
-  db.collection('counter').findOne({name : 'boardCnt'}, function(에러, 결과){
-    // 결과.totalPost
-    console.log("결과 확인 : "+결과.totalPost);
-    // 총개시물갯수라는 변수로 지정함
-    var 총개시물갯수 = 결과.totalPost;
-
-    // write에서 무엇인가를 작성했을 때 실행되는 함수 [insertOne]
-    db.collection('post').insertOne( { _id : 총개시물갯수+1, 제목 : 요청.body.title, 날짜 : 요청.body.date }, function() {
-      console.log('저장완료');
-      // insert를 진행했을 때 totalPost를 1 increment 시켜줘야하므로 해당 updateOne 함수를 실행시킨다 [updateOne]
-      db.collection('counter').updateOne({name : 'boardCnt'},{ $inc : {totalPost:1} },function(에러, 결과){
-        if(에러){return console.log(에러)} // 에러문 잡고자 할 떄
-      });
-    }); 
-  }); 
-  응답.redirect('/list');
-});
 
 app.get('/list', function(요청, 응답) {
   db.collection('post').find().toArray(function(에러, 결과) { // 전체 가져오기
-    console.log(결과);
+    //console.log(결과);
     응답.render('list.ejs', { posts : 결과 });
   });
 }); 
- 
-app.delete('/delete', function(요청, 응답){
-  console.log(요청.body);
-  요청.body._id = parseInt(요청.body._id); // 문자열로 치환되는 body._id를 숫자로 치환해주는 것
-  db.collection('post').deleteOne( 요청.body, function(에러, 결과) {
-    // 응답.status(200).send({ message : '성공했습니다.' }); // 무조건 200 성공 코드 보냄
-    // 응답.status(400).send({ message : '실패했습니다.' }); // 무조건 400 에러 코드 보냄
-    console.log('삭제완료');
-  });
-});
 
 app.get('/detail/:id', function(요청, 응답){
     db.collection('post').findOne({ _id : parseInt(요청.params.id) }, function(에러, 결과){
@@ -121,14 +106,6 @@ app.get('/detail/:id', function(요청, 응답){
         // if(응답.status(200)){return console.log("성공")};
         if(결과==null){return console.log("400 Bad Error가 발생했습니다.")};        
     });    
-});
-
-app.get('/edit/:id', function(요청, 응답) {
-  db.collection('post').findOne({ _id : parseInt(요청.params.id) }, function(에러, 결과){
-    console.log(결과);
-    응답.render('edit.ejs', { data : 결과 });
-    if(결과==null){return console.log("400 Bad Error가 발생했습니다.")};        
-  }); 
 });
 
 app.put('/edit', function(요청, 응답){
@@ -194,3 +171,58 @@ passport.deserializeUser(function (아이디/*user.id*/, done) {
     done(null, 결과)
   });
 }); 
+
+// 회원가입
+/*
+    회원가입 진행 전 아이디가 이미 있는지 찾아봐야함
+    Id에 알파벳+숫자만 잘들어있나?
+    비번 저장 전에 암호화했는지?
+*/
+app.post('/register', function(요청, 응답){
+  db.collection('login').insertOne( { id : 요청.body.id, pw : 요청.body.pw }, function(에러, 결과) {
+    응답.redirect('/');
+  })
+});
+
+// '/add' 라는 링크로 접속했을 때
+app.post('/add', function(요청, 응답) {
+  console.log(요청.user._id)
+  // 응답.send('전송완료');
+  // counter라는 collection에서 name이 'boardCnt'인 데이터 하나를 찾아주세요 [findOne]
+  db.collection('counter').findOne({name : 'boardCnt'}, function(에러, 결과){
+    // 결과.totalPost
+    //console.log("결과 확인 : "+결과.totalPost);
+    // 총개시물갯수라는 변수로 지정함
+    var 총개시물갯수 = 결과.totalPost;
+    var 저장할거 = { _id: 총개시물갯수 + 1, 작성자: 요청.user._id , 제목: 요청.body.title, 날짜: 요청.body.date }
+    // write에서 무엇인가를 작성했을 때 실행되는 함수 [insertOne]
+    db.collection('post').insertOne( 저장할거, function() {
+      console.log('저장완료');
+      // insert를 진행했을 때 totalPost를 1 increment 시켜줘야하므로 해당 updateOne 함수를 실행시킨다 [updateOne]
+      db.collection('counter').updateOne({name : 'boardCnt'},{ $inc : {totalPost:1} },function(에러, 결과){
+        if(에러){return console.log(에러)} // 에러문 잡고자 할 떄
+      });
+    }); 
+  }); 
+  응답.redirect('/list');
+});
+ 
+app.delete('/delete', function(요청, 응답){
+  요청.body._id = parseInt(요청.body._id); // 문자열로 치환되는 body._id를 숫자로 치환해주는 것
+  var 삭제할데이터 = { _id : 요청.body._id, 작성자 : 요청.user._id }
+  db.collection('post').deleteOne( 삭제할데이터, function(에러, 결과) {
+    console.log('삭제완료');
+    if (에러) {console.log(에러)}
+    //if (결과) {console.log(결과)}
+    응답.status(200).send({ message : '성공했습니다.' }); // 무조건 200 성공 코드 보냄
+    // 응답.status(400).send({ message : '실패했습니다.' }); // 무조건 400 에러 코드 보냄
+  });
+});
+
+app.get('/edit/:id', function(요청, 응답) {
+  var 수정할데이터 = { _id : parseInt(요청.params.id), 작성자 : 요청.user._id }
+  db.collection('post').findOne(수정할데이터,function(에러, 결과){
+    응답.render('edit.ejs', { data : 결과 });
+    if(결과==null){return console.log("400 Bad Error가 발생했습니다.")};        
+  }); 
+});
