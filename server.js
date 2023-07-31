@@ -226,3 +226,10 @@ app.get('/edit/:id', function(요청, 응답) {
     if(결과==null){return console.log("400 Bad Error가 발생했습니다.")};        
   }); 
 });
+
+app.use('/shop', require('./routes/shop.js')); 
+app.use('/board/sub', require('./routes/board.js'));
+
+
+
+

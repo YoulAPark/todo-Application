@@ -32,7 +32,7 @@
             <p> 작성자 : <%=  posts[i].작성자 %></p>
             <h4 class="detail" data-id="<%=posts[i]._id%>">할 일 제목 : <%= posts[i].제목 %></h4>
             <p>할 일 마감날짜 : <%=  posts[i].날짜 %><p>
-            <button class="btn btn-danger delete" type="submit" data-id="<%=posts[i]._id%>">삭제하기</button>
+            <button class="btn btn-danger" id="delete" type="submit" data-id="<%=posts[i]._id%>">삭제하기</button>
           </li>
           <% } %>
         </ul>
@@ -62,7 +62,7 @@
           location.href="/detail/"+글번호;
         });
 
-        $('.delete').click(function(e){
+        $('#delete').click(function(e){
           var 글번호 = e.target.dataset.id; // _id 확인
           var 지금누른거 = $(e.target); // Object로 나옴
           $.ajax({

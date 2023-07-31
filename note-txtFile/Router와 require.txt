@@ -1,0 +1,24 @@
+파일명 : shop.js
+
+다른 폴더의 위치해서 'shop.js'를 가져다 쓰고 싶을 때
+
+필요한 메서드
+1. require('파일경로') / require('라이브러리명')
+2. module.exports = 내보낼 변수명
+
+사용방법
+다른 폴더의 위치에 들어가 app.use('/', require('./routes/shop.js')); 삽입
+
+메서드 설명
+1. require('파일경로') / require('라이브러리명')
+    => 다른 파일이나 라이브러리를 이 곳에 첨부하겠다.
+
+    [example] 
+    var router = require('express').Router();
+
+2. module.exports = router; 
+    => 다른 폴더 위치에서 shop.js를 가져다 쓸 때 내보낼 변수
+    => module.exports = 내보낼 변수명
+
+3. app.use('/', require('./routes/shop.js')); 
+    => '/'경로로 들어온 고객들에게 require('./routes/shop.js' 미들웨어 적용
