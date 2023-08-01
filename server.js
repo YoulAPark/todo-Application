@@ -64,8 +64,10 @@ limits:{
 }); // diskStorage : 일반 하드 내 저장 / memoryStorage : RAM에 저장(휘발성있음)
 var upload = multer({storage : storage}); // => 미들웨어처럼 실행하면 된다.
 
-var db;
 
+
+var db;
+const { ObjectId } = require('mongodb'); // ObjectId 사용하고 싶을 때
 MongoClient.connect(process.env.DB_URL, { useUnifiedTopology: true }, function (에러, client) {
   if (에러) return console.log(에러)
     db = client.db('todoApplication');
@@ -144,7 +146,7 @@ app.get('/list', function(요청, 응답) {
 
 app.get('/detail/:id', function(요청, 응답){
     db.collection('post').findOne({ _id : parseInt(요청.params.id) }, function(에러, 결과){
-        console.log(결과);
+        console.log("!! : "+결과);
         응답.render('detail.ejs', { data : 결과 });
         // if(응답.status(200)){return console.log("성공")};
         if(결과==null){return console.log("400 Bad Error가 발생했습니다.")};        
@@ -273,6 +275,20 @@ app.get('/edit/:id', function(요청, 응답) {
 app.use('/shop', require('./routes/shop.js')); 
 app.use('/board/sub', require('./routes/board.js'));
 
+// 채팅
+app.post('/chatroom', 로그인했니, function(요청, 응답) {
+  var 저장할거 = {
+    member : [ObjectId(요청.body.당한사람id), 요청.user._id] ,
+    date : new Date() ,
+    title : '테스트채팅방'
+  }
+  db.collection('chatroom').insertOne( 저장할거 , function(에러, 결과){
+  });
+});
 
-
-
+app.get('/chat', 로그인했니, function(요청, 응답){
+  db.collection('chatroom').find({ member : 요청.user._id }).toArray().then((결과)=>{
+    console.log(결과);
+    응답.render('chat.ejs', {data : 결과})
+  })
+});
