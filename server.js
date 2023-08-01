@@ -279,10 +279,10 @@ app.use('/board/sub', require('./routes/board.js'));
 app.post('/chatroom', 로그인했니, function(요청, 응답) {
   var 저장할거 = {
     member : [ObjectId(요청.body.당한사람id), 요청.user._id] ,
-    date : new Date() ,
-    title : '테스트채팅방'
+    date : new Date(),
+    title : 요청.body.제목
   }
-  db.collection('chatroom').insertOne( 저장할거 , function(에러, 결과){
+  db.collection('chatroom').insertOne( 저장할거, function(에러, 결과){
   });
 });
 

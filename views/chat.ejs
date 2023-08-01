@@ -49,8 +49,8 @@
           <div class="col-3">
             <ul class="list-group chat-list">
               <% for (var i=0; i < data.length; i++) { %>      
-                <li class="list-group-item" data-id="">
-                  <h6><%=  data[i].title %></h6>
+                <li class="list-group-item" id="selectChat" data-id="">
+                  <h6 data-id="title"><%=  data[i].title %></h6>
                   <h6 class="text-small"><%=  data[i].member[0] %></h6>
                 </li>
                <% } %>
@@ -81,6 +81,12 @@
         $('#send').click(function() {
             var 입력한값 = $('#sendMessage').val();
             console.log('전송클릭 : '+입력한값)
+        });
+
+        $('#selectChat').click(function(e){
+          console.log('클릭완료')
+          var title = e.target.dataset.title;
+          console.log(title)
         });
       </script>
 
