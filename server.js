@@ -40,6 +40,30 @@ app.use('/public', express.static('public'));
 */
 require('dotenv').config();
   
+/* [multer]
+설치방식 : npm install multer | 종류 : Library | 용도 : multipart 데이터를 쉽게 처리할 수 있도록 도와줌 / 파일전송 쉽게쉽게 파일명 저장시키고 분석하는 라이브러리
+*/
+let multer = require('multer');
+var storage = multer.diskStorage({
+  destination : function(req, file, cb){
+    cb(null, './public/image') // 이미지 저장하는 폴더 지정
+  },
+  filename : function(req, file, cb){
+    cb(null, file.originalname) // 폴더에 저장시 파일명 지정 / originalname : 기존 파일명 그대로
+  },
+  fileFilter: function (req, file, callback) { // File 확장자 거르기
+    var ext = path.extname(file.originalname);
+    if(ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg') {
+        return callback(new Error('PNG, JPG만 업로드하세요'))
+    }
+    callback(null, true)
+},
+limits:{
+    fileSize: 1024 * 1024
+}
+}); // diskStorage : 일반 하드 내 저장 / memoryStorage : RAM에 저장(휘발성있음)
+var upload = multer({storage : storage}); // => 미들웨어처럼 실행하면 된다.
+
 var db;
 
 MongoClient.connect(process.env.DB_URL, { useUnifiedTopology: true }, function (에러, client) {
@@ -65,6 +89,25 @@ app.get('/write', function(요청, 응답) {
 app.get('/join', function(요청, 응답) {
   응답.render('join.ejs');
 })
+
+app.get('/upload', function(요청, 응답) {
+  응답.render('upload.ejs');
+})
+
+// Single-File Upload
+app.post('/upload', upload.single('profile'), function(요청, 응답){// upload.single('name에 적힌 명')
+  응답.send('업로드완료')
+}); 
+
+// 다중 파일 업로드 => upload.array('변수명', 한번에 다운받을 자료의 개수)
+// app.post('/upload', upload.array('profile', 10), function(요청, 응답){// upload.single('name에 적힌 명')
+//   응답.send('업로드완료')
+// }); 
+
+// 이미지 가져올 수 있는 경로 => <img src = "/image/music.jpg"> 
+app.get('/image/:imageName', function(요청, 응답){
+  응답.sendFile( __dirname + '/public/image/' + 요청.params.imageName); // __dirname 현 파일의 경로 server.js
+});
 
 app.get('/search', (요청, 응답)=>{
   //db.collection('post').find({ $text : { $search : 요청.query.value } }).toArray((에러, 결과)=>{

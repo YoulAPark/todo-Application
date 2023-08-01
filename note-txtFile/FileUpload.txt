@@ -1,0 +1,10 @@
+enctype="multipart/form-data"
+별도의 인코딩없이 그대로 전송해라 
+=> 일반 파일 업로드시 사용함
+
+<div class="container mt-4">
+        <h4>업로드페이지</h4>
+        <form method="POST" action="/upload" enctype="multipart/form-data">
+            <input type="file">
+        </form>
+      </div>
