@@ -288,14 +288,13 @@ app.post('/chatroom', 로그인했니, function(요청, 응답) {
 
 app.get('/chat', 로그인했니, function(요청, 응답){
   db.collection('chatroom').find({ member : 요청.user._id }).toArray().then((결과)=>{
-    console.log(결과);
     응답.render('chat.ejs', {data : 결과})
   });
 });
 
 app.post('/message', 로그인했니, function(요청, 응답) {
   var 저장할거 = {
-    parent : 요청.body.parent ,
+    parent : 요청.body.parent , //상위게시물
     content : 요청.body.content ,
     userId : 요청.user._id,
     date : new Date()
@@ -304,4 +303,35 @@ app.post('/message', 로그인했니, function(요청, 응답) {
     console.log('DB저장성공');
     응답.send('DB저장성공')
   });
+});
+
+
+// app.get('/edit/:id', function(요청, 응답) {
+//   var 수정할데이터 = { _id : parseInt(요청.params.id), 작성자 : 요청.user._id }
+
+// 서버와 유저간 실시간 소통채널 
+// 일반적인 GET,POST 요청들은 1회요청시 1회응답만 가능
+app.get('/message/:id', 로그인했니, function(요청, 응답) {
+  
+  var 지금누른채팅방id = 요청.params.id
+  
+  응답.writeHead(200, { //Header를 이렇게 수정해달라~
+    "Connection": "keep-alive",
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache",
+  });
+
+  db.collection('message').find({ parent : 요청.params.id }).toArray().then((결과)=>{
+    console.log('collection message 까지 진입 함')
+    console.log('요청.params.id : '+요청.params.id)
+    console.log('결과 : '+결과[0])
+    응답.write('event: test\n');
+    응답.write('data: '+JSON.stringify(결과)+'\n\n');
+    // 응답.write('data : ' + JSON.stringify(결과) +'\n\n');
+  });
+
+  // Object나 Array 함수를 String으로 변환하는 방법 : JSON자료형으로 변환해야 한다
+  // JSON자료형 : Object나 Array를 따옴표처럼 String화 한게 JSON자료형
+  // JSON.stringify(결과)
+
 });

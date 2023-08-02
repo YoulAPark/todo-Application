@@ -80,10 +80,25 @@
       <script>
 
         var 지금누른채팅방id; // 지금누른채팅방id 전역변수 지정
+        var eventSource;
+
+        var main;
 
         $('.list-group-item').click(function(e){
-          지금누른채팅방id = $('.list-group-item').attr('data-id');
+          지금누른채팅방id = this.dataset.id;
           console.log('클릭한채팅방 : '+지금누른채팅방id)
+
+          //프론트엔드에서 실시간 소통채널 여는법 
+          eventSource = new EventSource('/message/'+지금누른채팅방id);
+          eventSource.addEventListener('test', function(e){
+            console.log(JSON.parse(e.data)[0]); // 첫번째 대화
+            console.log(JSON.parse(e.data)[1]); // 두번째 대화
+            
+            main = JSON.parse(e.data)[0]
+            
+            $('.chat-box mine').append(JSON.parse(e.data)[0]);
+          });
+          
         });
 
         $('#send').click(function() {
