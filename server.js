@@ -280,7 +280,7 @@ app.post('/chatroom', 로그인했니, function(요청, 응답) {
   var 저장할거 = {
     member : [ObjectId(요청.body.당한사람id), 요청.user._id] ,
     date : new Date(),
-    title : 요청.body.제목
+    title : '에라잇'
   }
   db.collection('chatroom').insertOne( 저장할거, function(에러, 결과){
   });
@@ -290,5 +290,18 @@ app.get('/chat', 로그인했니, function(요청, 응답){
   db.collection('chatroom').find({ member : 요청.user._id }).toArray().then((결과)=>{
     console.log(결과);
     응답.render('chat.ejs', {data : 결과})
-  })
+  });
+});
+
+app.post('/message', 로그인했니, function(요청, 응답) {
+  var 저장할거 = {
+    parent : 요청.body.parent ,
+    content : 요청.body.content ,
+    userId : 요청.user._id,
+    date : new Date()
+  }
+  db.collection('message').insertOne(저장할거).then(()=>{
+    console.log('DB저장성공');
+    응답.send('DB저장성공')
+  });
 });

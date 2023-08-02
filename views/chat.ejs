@@ -49,20 +49,20 @@
           <div class="col-3">
             <ul class="list-group chat-list">
               <% for (var i=0; i < data.length; i++) { %>      
-                <li class="list-group-item" id="selectChat" data-id="">
-                  <h6 data-id="title"><%=  data[i].title %></h6>
+                <li class="list-group-item" data-id="<%= data[i]._id %>">
+                  <h6><%= data[i].title %></h6> 
                   <h6 class="text-small"><%=  data[i].member[0] %></h6>
                 </li>
                <% } %>
+
              </ul>
            </div>
       
            <div class="col-9 p-0">
              <div class="chat-room">
                 <ul class="list-group chat-content">
-                  <li><span class="chat-box">채팅방1 내용</span></li>
-                  <li><span class="chat-box">채팅방1 내용</span></li>
-                  <li><span class="chat-box mine">채팅방1 내용</span></li>
+                  <li><span class="chat-box">상대가 말한 내용</span></li>
+                  <li><span class="chat-box mine">내가 말한 내용</span></li>
                 </ul>
               <div class="input-group">
                 <input class="form-control" id="chat-input">
@@ -78,16 +78,26 @@
       <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
       <script>
-        $('#send').click(function() {
-            var 입력한값 = $('#sendMessage').val();
-            console.log('전송클릭 : '+입력한값)
+
+        var 지금누른채팅방id; // 지금누른채팅방id 전역변수 지정
+
+        $('.list-group-item').click(function(e){
+          지금누른채팅방id = $('.list-group-item').attr('data-id');
+          console.log('클릭한채팅방 : '+지금누른채팅방id)
         });
 
-        $('#selectChat').click(function(e){
-          console.log('클릭완료')
-          var title = e.target.dataset.title;
-          console.log(title)
+        $('#send').click(function() {
+          console.log('전송클릭완료')
+          var 채팅내용 = $('#chat-input').val();
+          var 보낼거 = {
+            parent : 지금누른채팅방id ,
+            content : 채팅내용
+          }
+          $.post('/message', 보낼거).then(()=>{
+            console.log('메세지 전송 성공')
+          });
         });
+        
       </script>
 
 
