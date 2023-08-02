@@ -322,12 +322,20 @@ app.get('/message/:id', 로그인했니, function(요청, 응답) {
   });
 
   db.collection('message').find({ parent : 요청.params.id }).toArray().then((결과)=>{
-    console.log('collection message 까지 진입 함')
-    console.log('요청.params.id : '+요청.params.id)
-    console.log('결과 : '+결과[0])
     응답.write('event: test\n');
     응답.write('data: '+JSON.stringify(결과)+'\n\n');
-    // 응답.write('data : ' + JSON.stringify(결과) +'\n\n');
+  });
+
+  // 메세지를 전송했을 때 바로바로 내가 보낸 메세지가 뜨지 않는 문제 발생
+  // 이건 채팅기능시 필요 : DB에 변동사항이 생기면 server에게 변동사항을 알려줌
+  // [change Stream]
+  const 찾을문서 = [
+    { $match: { 'fullDocument.parent' : 요청.params.id } } // 감시하고 싶은 부분 => fullDocument 꼭 붙여야함
+  ];  
+  const changeStream = db.collection('message').watch(찾을문서); // watch() : 실시간감시
+  changeStream.on('change', (result) => { // result => 메세지 결과
+    응답.write('event: test\n');
+    응답.write('data: '+JSON.stringify([result.fullDocument])+'\n\n');
   });
 
   // Object나 Array 함수를 String으로 변환하는 방법 : JSON자료형으로 변환해야 한다

@@ -60,10 +60,7 @@
       
            <div class="col-9 p-0">
              <div class="chat-room">
-                <ul class="list-group chat-content">
-                  <li><span class="chat-box">상대가 말한 내용</span></li>
-                  <li><span class="chat-box mine">내가 말한 내용</span></li>
-                </ul>
+                <ul class="list-group chat-content"></ul>
               <div class="input-group">
                 <input class="form-control" id="chat-input">
                 <button class="btn btn-secondary" id="send">전송</button>
@@ -82,23 +79,31 @@
         var 지금누른채팅방id; // 지금누른채팅방id 전역변수 지정
         var eventSource;
 
-        var main;
-
         $('.list-group-item').click(function(e){
+          
           지금누른채팅방id = this.dataset.id;
-          console.log('클릭한채팅방 : '+지금누른채팅방id)
+          
+          $('.chat-content').html(''); // 클릭했을 때 이전채팅방 내역 깨끗하게 지우고 다음채팅방 오픈하기
+         
+          // eventSource가 undifined가 아니면~ 소통채널 나가기
+          if (eventSource != undefined) {
+            eventSource.close()
+          }
 
           //프론트엔드에서 실시간 소통채널 여는법 
           eventSource = new EventSource('/message/'+지금누른채팅방id);
           eventSource.addEventListener('test', function(e){
-            console.log(JSON.parse(e.data)[0]); // 첫번째 대화
-            console.log(JSON.parse(e.data)[1]); // 두번째 대화
+            // console.log(JSON.parse(e.data)[0]); // 첫번째 대화
+            // console.log(JSON.parse(e.data)[1]); // 두번째 대화
             
-            main = JSON.parse(e.data)[0]
+            var 가져온거 = JSON.parse(e.data); 
             
-            $('.chat-box mine').append(JSON.parse(e.data)[0]);
-          });
-          
+            // 가져온거 안에 있는 데이터만큼 for문 실행 
+            가져온거.forEach(function(i){
+              $('.chat-content').append('<li><span class="chat-box">' + i.content + '</span></li>')
+            });
+                     
+           });
         });
 
         $('#send').click(function() {
