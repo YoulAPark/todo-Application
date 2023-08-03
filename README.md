@@ -1,4 +1,7 @@
 # todo-Application
+## ❓ What is Moopi?
+해당 프로젝트는 오늘의 할일들을 적고 실천해나가는 스케쥴링 어플리케이션입니다.
+타 유저들의 todoList 확인이 가능하며, 원하는 유저와 채팅도 가능합니다.
 
 ## 💻 About this project
 - IDE : VSCode
