@@ -64,14 +64,23 @@ limits:{
 }); // diskStorage : 일반 하드 내 저장 / memoryStorage : RAM에 저장(휘발성있음)
 var upload = multer({storage : storage}); // => 미들웨어처럼 실행하면 된다.
 
-
+/* [Socket.io]
+설치방식 : npm install socket.io | 종류 : Library | 용도 : 체팅
+*/
+const http = require('http').createServer(app);
+const {Server} = require('socket.io');
+const io = new Server(http);
 
 var db;
 const { ObjectId } = require('mongodb'); // ObjectId 사용하고 싶을 때
 MongoClient.connect(process.env.DB_URL, { useUnifiedTopology: true }, function (에러, client) {
   if (에러) return console.log(에러)
     db = client.db('todoApplication');
-    app.listen(process.env.PORT, function () {
+    // socket.io 사용 전
+    // app.listen(process.env.PORT, function () {
+    //   console.log('listening on 8080')
+    // });
+    http.listen(process.env.PORT, function () {
       console.log('listening on 8080')
     });
 });
@@ -309,7 +318,7 @@ app.post('/message', 로그인했니, function(요청, 응답) {
 // app.get('/edit/:id', function(요청, 응답) {
 //   var 수정할데이터 = { _id : parseInt(요청.params.id), 작성자 : 요청.user._id }
 
-// 서버와 유저간 실시간 소통채널 
+// 서버와 유저간 실시간 소통채널 [SSE : Server Sent Event]
 // 일반적인 GET,POST 요청들은 1회요청시 1회응답만 가능
 app.get('/message/:id', 로그인했니, function(요청, 응답) {
   
@@ -342,4 +351,31 @@ app.get('/message/:id', 로그인했니, function(요청, 응답) {
   // JSON자료형 : Object나 Array를 따옴표처럼 String화 한게 JSON자료형
   // JSON.stringify(결과)
 
+});
+
+app.get('/socket', function(요청, 응답) {
+    응답.render('socket.ejs');
+});
+
+// socket.io => 웹소켓을 누군가가 접속시 내부 코드 실행해달라
+io.on('connection', function(socket){
+  console.log('유저접속됨');
+
+  socket.on('room1-send', function(data){ 
+    io.to('room1').emit('broadcast', data)
+  });
+
+  socket.on('joinRoom', function(data){ 
+    socket.join('room1');
+    console.log('room1 입장완료')
+  });
+
+  socket.join('room1') // 채팅방 생성하기, 입장시키기
+
+  socket.on('user-send', function(data){ // 서버가 수신하려면 socket.on('작명', 콜백함수)
+    io.emit('broadcast', data) // [단체채팅] 서버가 전송하려면
+    //io.to(socket.id).emit('broadcast', data) // [개별채팅]
+  });
+
+  
 });
