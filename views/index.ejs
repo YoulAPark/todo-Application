@@ -8,24 +8,39 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
+    <!-- CSS 첨부하는 곳 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@200;400&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="/public/main.css">
+   
     <title>Hello, world!</title>
+
+    <style type="text/css">
+      .jumbotron{
+        background-color: papayawhip;
+        background-size: cover;
+        /* text-shadow: black 0.2em 0.2em 0.2em; */
+        color:black;
+      }
+    </style>
+
   </head>
+  
   <body>
 
     <%- include('nav.html') %>
 
-      <div class="jumbotron">
-        <h1 class="display-4">Welcome! Todo-App!</h1>
-        <p class="lead">Todo-Application의 Home입니다.</p>
+      <div class="jumbotron text-center">
+        <h1 class="display-4 text-center">Oneul</h1>
+        <p class="lead text-center">오늘에 대하여</p>
         <hr class="my-4">
-        <div>
-          <a class="btn btn-secondary btn-lg" href="/join" role="button">회원가입</a>
-          <a class="btn btn-secondary btn-lg" href="/login" role="button">Login</a>
-        </div>
-        <div class="my-2 loginState">   
-          <a class="btn btn-secondary btn-lg" href="/list" role="button">할 일 목록</a>
-          <a class="btn btn-secondary btn-lg" href="/myPage" role="button">마이페이지</a>
-        </div> 
+        <p>개인 및 업무 일정을 계획하는 데 사용할 수 있는 최고의 앱 중 하나입니다. 이 앱에는 많은 작업 관리 기능이 있으며 사용자 인터페이스가 탁월합니다</p>
+      </div>
+
+      <div class="container text-center">
+        <a class="btn btn-lg" href="/join" role="button">회원가입</a>
+        <a class="btn btn-lg" href="/login" role="button">로그인</a>
       </div>
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
