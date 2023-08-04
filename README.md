@@ -1,5 +1,5 @@
 # todo-Application
-## ❓ What is Moopi?
+## ❓ What is Oneul?
 오늘의 할일들을 적고 실천해나가는 **스케쥴링 어플리케이션**
 <br>타 유저들의 todoList 확인이 가능하며, 원하는 유저와 채팅도 가능하다.
 
@@ -43,6 +43,9 @@
     <img src="https://img.shields.io/badge/dotenv-000000?style=for-the-badge&logo=dotenv&logoColor=white"/>
   </div> 
 </div>
+
+## Image 📷
+<img width="1435" alt="image" src="https://github.com/YoulAPark/somerset/assets/101085988/5e27bfa3-ab24-48f8-be62-e8283792d6e0">
 
 ## 💻 server run
 ```nodemon server.js```
