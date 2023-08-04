@@ -357,25 +357,49 @@ app.get('/socket', function(요청, 응답) {
     응답.render('socket.ejs');
 });
 
+app.get('/socketChat', function(요청, 응답){
+  응답.render('socketChat.ejs');
+})
+
 // socket.io => 웹소켓을 누군가가 접속시 내부 코드 실행해달라
 io.on('connection', function(socket){
-  console.log('유저접속됨');
 
-  socket.on('room1-send', function(data){ 
-    io.to('room1').emit('broadcast', data)
+  socket.on('userSend', function(data) {
+    io.emit('broadcast', data);
   });
 
-  socket.on('joinRoom', function(data){ 
-    socket.join('room1');
-    console.log('room1 입장완료')
+  socket.on('groupRoom', function(data) {
+    console.log('data : '+data)
+    socket.join('groupRoom');
+    io.to("groupRoom").emit('broadcast', data);
   });
 
-  socket.join('room1') // 채팅방 생성하기, 입장시키기
-
-  socket.on('user-send', function(data){ // 서버가 수신하려면 socket.on('작명', 콜백함수)
-    io.emit('broadcast', data) // [단체채팅] 서버가 전송하려면
-    //io.to(socket.id).emit('broadcast', data) // [개별채팅]
+  socket.on('firstRoom', function(data) {
+    socket.join('firstRoom');
+    io.to("firstRoom").emit('broadcast', data);
   });
+
+  socket.on('secondRoom', function(data) {
+    socket.join('secondRoom');
+    io.to("secondRoom").emit('broadcast', data);
+  });
+
+
+  // socket.on('room1-send', function(data){ 
+  //   io.to('room1').emit('broadcast', data)
+  // });
+
+  // socket.on('joinRoom', function(data){ 
+  //   socket.join('room1');
+  //   console.log('room1 입장완료')
+  // });
+
+  // socket.join('room1') // 채팅방 생성하기, 입장시키기
+
+  // socket.on('user-send', function(data){ // 서버가 수신하려면 socket.on('작명', 콜백함수)
+  //   io.emit('broadcast', data) // [단체채팅] 서버가 전송하려면
+  //   //io.to(socket.id).emit('broadcast', data) // [개별채팅]
+  // });
 
   
 });
