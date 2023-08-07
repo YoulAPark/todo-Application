@@ -85,6 +85,40 @@ MongoClient.connect(process.env.DB_URL, { useUnifiedTopology: true }, function (
     });
 });
 
+app.get('/login', function(요청, 응답){
+  응답.render('login.ejs');
+});
+
+app.post('/login', passport.authenticate('local', {
+  failureRedirect : '/fail'
+}), function(요청, 응답){
+  응답.redirect('/');
+});
+
+// app.post('/login') 을 실행하면 실행하게 되는 메서드이다.
+passport.use(new LocalStrategy({
+  usernameField: 'id',
+  passwordField: 'pw',
+  session: true,
+  passReqToCallback: false,
+}, function (입력한아이디, 입력한비번, done) {
+    db.collection('login').findOne({ id: 입력한아이디 }, function (에러, 결과) {
+      if (에러) return done(에러)
+      if (!결과) return done(null, false, { message: '존재하지않는 아이디요' })
+      if (입력한비번 == 결과.pw) {
+        return done(null, 결과)
+      } else {
+        return done(null, false, { message: '비번틀렸어요' })
+      }
+  })
+}));
+
+// session 데이터 만드는법
+// session을 저장시키는 코드 (로그인 성공시 발동)
+passport.serializeUser(function (user, done) {
+  done(null, user.id)
+});
+
 app.get('/', function(요청, 응답) {
   응답.render('index.ejs');
 });
@@ -171,39 +205,7 @@ app.put('/edit', function(요청, 응답){
   });
 });
 
-app.get('/login', function(요청, 응답){
-  응답.render('login.ejs');
-});
 
-app.post('/login', passport.authenticate('local', {
-  failureRedirect : '/fail'
-}), function(요청, 응답){
-  응답.redirect('/');
-});
-
-// app.post('/login') 을 실행하면 실행하게 되는 메서드이다.
-passport.use(new LocalStrategy({
-  usernameField: 'id',
-  passwordField: 'pw',
-  session: true,
-  passReqToCallback: false,
-}, function (입력한아이디, 입력한비번, done) {
-    db.collection('login').findOne({ id: 입력한아이디 }, function (에러, 결과) {
-      if (에러) return done(에러)
-      if (!결과) return done(null, false, { message: '존재하지않는 아이디요' })
-      if (입력한비번 == 결과.pw) {
-        return done(null, 결과)
-      } else {
-        return done(null, false, { message: '비번틀렸어요' })
-      }
-  })
-}));
-
-// session 데이터 만드는법
-// session을 저장시키는 코드 (로그인 성공시 발동)
-passport.serializeUser(function (user, done) {
-  done(null, user.id)
-});
 
 //myPage로 들어올경우 로그인했니라는 미들웨어(메서드)를 실행한다
 app.get('/myPage', 로그인했니, function(요청, 응답){
