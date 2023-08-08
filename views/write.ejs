@@ -22,15 +22,15 @@
 
       <div class="container mt-4">
         <form action="/add" method="POST">
-            <h4>기록해도 안할 거 알지만</h4>
+            <h4>To-do List</h4>
+            <div class="form-group">
+              <label for="text">일자를 지정해주세요</label>
+              <input type="text" class="form-control" placeholder="Due date" name="date">
+            </div>
             <div class="form-group">
                 <label for="text">오늘의 할일</label>
-                <input type="text" class="form-control" placeholder="오늘의 할일" name="title">
-            </div>
-            <div class="form-group">
-                <label for="text">Due date</label>
-                <input type="text" class="form-control" placeholder="Due date" name="date">
-            </div>
+                <input type="text" class="form-control" placeholder="오늘의 할일을 이곳에 적어볼까요?" name="title">
+            </div>            
             <button type="submit" class="btn btn-light">저장하기</button>
         </form>
       </div>
