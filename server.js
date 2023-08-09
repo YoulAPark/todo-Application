@@ -71,18 +71,46 @@ const http = require('http').createServer(app);
 const {Server} = require('socket.io');
 const io = new Server(http);
 
-var db;
+// [bcrypt]
+const saltRounds = 10;
+bcrypt.hash(beforePassword, saltRounds, (err, hash)=>{  // hash: afterPassword
+  try {
+    if(result) {
+      console.log('true'); // 로그인
+    } else {
+        console.log('false'); // 실패
+    }
+  } catch {
+    console.log('err: ' + err);
+  }
+});
+
+
 const { ObjectId } = require('mongodb'); // ObjectId 사용하고 싶을 때
-MongoClient.connect(process.env.DB_URL, { useUnifiedTopology: true }, function (에러, client) {
-  if (에러) return console.log(에러)
-    db = client.db('todoApplication');
-    // socket.io 사용 전
-    // app.listen(process.env.PORT, function () {
-    //   console.log('listening on 8080')
-    // });
-    http.listen(process.env.PORT, function () {
-      console.log('listening on 8080')
+
+// const db_url = 'mongodb+srv://admin:<password>@cluster0.j22z1ok.mongodb.net/{ProjectName}?retryWrites=true&w=majority"
+const db_id = process.env.DB_ID;
+const db_pw = process.env.DB_PW;
+const db_cluster = process.env.DB_CLUSTER;
+const server_port = process.env.SERVER_PORT;
+const db_url = "mongodb+srv://" + db_id + ":" + db_pw + "@" + db_cluster + ".j22z1ok.mongodb.net/todoApplication?retryWrites=true&w=majority"
+let db;
+
+MongoClient.connect(db_url, { useUnifiedTopology: true }, function (에러, client) {
+  // if (에러) return console.log(에러)
+  //   db = client.db('todoApplication');
+  //   http.listen(process.env.SERVER_PORT, function () {
+  //     console.log('listening on 8080')
+  //   });
+
+  if(에러) {
+    return console.log(에러);
+  } else {
+    app.listen(server_port, ()=>{
+      global.db = client.db('todoApplication');
+      console.log('<<<<< listening on server >>>>>')
     });
+  }
 });
 
 app.get('/login', function(요청, 응답){
@@ -112,6 +140,12 @@ passport.use(new LocalStrategy({
       }
   })
 }));
+
+
+// ROUTER
+app.use('/member', require('./routes/member.js'));
+app.use('/shop', require('./routes/shop.js')); 
+app.use('/board/sub', require('./routes/board.js'));
 
 // session 데이터 만드는법
 // session을 저장시키는 코드 (로그인 성공시 발동)
@@ -228,17 +262,16 @@ passport.deserializeUser(function (아이디/*user.id*/, done) {
   });
 }); 
 
-// 회원가입
-/*
-    회원가입 진행 전 아이디가 이미 있는지 찾아봐야함
-    Id에 알파벳+숫자만 잘들어있나?
-    비번 저장 전에 암호화했는지?
-*/
-app.post('/register', function(요청, 응답){
-  db.collection('login').insertOne( { id : 요청.body.id, pw : 요청.body.pw }, function(에러, 결과) {
-    응답.redirect('/');
-  })
-});
+
+
+
+
+
+
+
+
+
+
 
 // '/add' 라는 링크로 접속했을 때
 app.post('/add', function(요청, 응답) {
@@ -283,8 +316,7 @@ app.get('/edit/:id', function(요청, 응답) {
   }); 
 });
 
-app.use('/shop', require('./routes/shop.js')); 
-app.use('/board/sub', require('./routes/board.js'));
+
 
 // 채팅
 app.post('/chatroom', 로그인했니, function(요청, 응답) {
