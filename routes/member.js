@@ -1,14 +1,37 @@
 var router = require('express').Router();
 const passport = require('passport');
 const bcrypt = require('bcrypt');
-const saltRounds = 10;
+
+router.get('/login', function(요청, 응답) {
+    응답.render('login.ejs');
+});
 
 router.get('/join', function(요청, 응답) {
     응답.render('join.ejs');
 });
 
-router.get('/login', function(요청, 응답){
-    응답.render('login.ejs');
+router.post('/login', (req, res) => {
+    let id = req.body.id;
+    let pw = req.body.pw;
+    db.collection('login').findOne({id: id}, (err, result)=>{
+        if(result) {
+            let enc_pw = result.pw;
+            bcrypt.compare(pw, enc_pw, (error, result)=>{
+                try {
+                    if(result) {
+                        res.send({ code : 1 })
+                    } else {
+                        res.send({ code : 0 });
+                    }
+                } catch(err) {
+                    console.log(err)
+                    res.send({ code : 0 });
+                }
+            });
+        } else {
+            res.send({ code : 0 }); 
+        }
+    });
 })
 
 router.get('/myPage', (요청, 응답) => {
@@ -16,17 +39,12 @@ router.get('/myPage', (요청, 응답) => {
 });
 
 
-router.post('/login', passport.authenticate('local', {
-    failureRedirect : '/member/loginFail'
-    }), (요청, 응답) => {
-      응답.send({code:1})
-});
-  
 router.get('/loginFail', (요청, 응답) => {
       응답.send({code:0})
 });
 
 router.post('/register', async function(요청, 응답){
+    const saltRounds = 10;
     const id = 요청.body.id;
     const nickName = 요청.body.nickName;
     const pw = 요청.body.pw;
