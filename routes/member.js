@@ -1,6 +1,6 @@
 var router = require('express').Router();
 const passport = require('passport');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt'); // 암호화
 
 router.get('/login', function(요청, 응답) {
     응답.render('login.ejs');
