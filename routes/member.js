@@ -1,5 +1,5 @@
 var router = require('express').Router();
-const passport = require('passport');
+const passport = require('passport'); // 회원유효성인증
 const bcrypt = require('bcrypt'); // 암호화
 
 router.get('/login', function(요청, 응답) {
