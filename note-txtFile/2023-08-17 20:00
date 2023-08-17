@@ -1,0 +1,12 @@
+Node.js
+	
+	- JavaScript를 서버에서도 사용할 수 있도록 만든 프로그램
+	- JavaScript 언어를 사용
+	- Non-blocking I/O(비동기 입출력)와 단일 스레드 이벤트 루프를 통한 높은 처리 성능을 가지고 있다.
+		* Non-blocking I/O => 비동기 입출력
+	- 자바스크립트를 웹 브라우저에서 독립시킨 것
+	- 터미널 프로그램에서 Node.js를 입력하여 브라우저 없이 바로 실행할 수 있다.
+	
+	sever side script
+	script : 명령들을 실행하는 것
+	server side : 서버안에서 실행되는 스크립트 (JSP, Node.js, PHP)
